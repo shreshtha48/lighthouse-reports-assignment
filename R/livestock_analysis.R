@@ -1,7 +1,4 @@
-## code to prepare `livestock_analysis` data set goes here
-#we load the data
-data=data
-livestock=livestock
+
 #loading the libraries sf and ggplot2
 library(sf)
 library(ggplot2)
@@ -15,8 +12,9 @@ graph=species_count[1:10, ]
 #plotting the top ten species using a simple bar graph
 ggplot(graph, aes(x=Var1, y=Freq),ylab="species",xlab="number of farms") +
   labs(x="number of farms", y="species")+
-  ggtitle("top ten number of species by farm for spain")+
+  ggtitle("top ten number of species by farm")+
   geom_bar(stat = "identity")+
+  theme_minimal()+
   #flipped it because it looks neat
   coord_flip()
 
@@ -70,12 +68,33 @@ species=livestock%>%
  result$normalized_nitrogen_emissions=as.numeric(result$total_nitrogen_emissions/result$freq)
  result=result[order(-result$normalized_nitrogen_emissions),]
 
-
-ggplot(result, aes(x=SPECIES, y=normalized_nitrogen_emissions),ylab="nitrogen emissions",xlab="species") +
-  labs(x="number of farms", y="species")+
-  ggtitle("top ten number of species by farm for spain")+
-  geom_bar(stat = "identity")
+ggplot(result, aes(x= reorder(SPECIES, -normalized_nitrogen_emissions), y=normalized_nitrogen_emissions),ylab="nitrogen emissions",xlab="species") +
+  labs(x="species", y="nitrogen emissions")+
+  ggtitle("nitrogen emission by species")+
+  geom_bar(stat = "identity")+
+  coord_flip()
   #flipped it because it looks
+#combine both of them in a single plot
+library(ggplot2)
+library(gridExtra)
+
+plot1 <- ggplot(graph, aes(x = Var1, y = Freq)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top Ten Number of Species by Farm", x = "Species", y = "Number of Farms") +
+  theme_minimal() +
+  coord_flip()
+
+plot2 <- ggplot(result, aes(x = reorder(SPECIES, -normalized_nitrogen_emissions), y = normalized_nitrogen_emissions)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Nitrogen Emission by Species", x = "Species", y = "Nitrogen Emissions") +
+  theme_minimal() +
+  coord_flip()
+
+# Arrange plots in a grid
+grid.arrange(plot1, plot2, nrow = 1)
+
+
+
 
 usethis::use_data(result,compress = "xz", overwrite=TRUE)
 usethis::use_data(graph, compress="xz", overwrite=TRUE)
