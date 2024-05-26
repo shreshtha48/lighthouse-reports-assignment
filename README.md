@@ -5,8 +5,3 @@
 
 The data has information about the types of the farm, their location, their operating status, the type of species they have in the farm, the nitrogen emission by the farm etc. More metadata about the columns can be found [here](https://agricultura.gencat.cat/ca/serveis/registres-oficials/ramaderia-sanitat-animal/registre-explotacions-ramaderes/)
 
-## How to install this package
-
-## Usage
-
-## Citations
